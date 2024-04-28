@@ -31,7 +31,7 @@ SECRET_KEY = 'django-insecure-g9&@*7aqsjbx@@+@zxj36d65++qp2p!xww5t(!g$2002b-!voz
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    'findrpet.herokuapp.com',
+    'findrpet-396758554580.herokuapp.com',
     'findrpet.tech'
 ]
 
