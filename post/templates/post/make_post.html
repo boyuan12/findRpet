@@ -1,0 +1,87 @@
+{% extends "authentication/base.html" %}
+
+{% block head %}
+<script src="https://cdn.tiny.cloud/1/0ekk4tcrl8nby6zse0ct8zee5zcw2ovbcawvjliem02kp2f5/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+<script>
+    tinymce.init({
+      selector: '#pet_description',
+      skin: 'jam',
+      icons: 'jam',
+      height: "240",
+      plugins: 'code image link lists',
+      toolbar: 'undo redo | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+      content_style: '.mce-content-body {background: #eeeeee}',
+      menubar: false
+    });
+</script>
+{% endblock %}
+
+{% block main %}
+<section class="bg-white">
+  <div class="lg:grid lg:min-h-screen lg:grid-cols-12">
+
+    <main
+      class="flex items-center justify-center px-8 py-8 sm:px-12 lg:col-span-12 lg:px-16 lg:py-12 xl:col-span-12"
+    >
+      <div class="max-w-xl lg:max-w-3xl">
+        <h1 class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-black">Emergency Pet SOS</h1>
+
+
+        <form method="POST" class="mt-8 grid grid-cols-3 gap-3" enctype="multipart/form-data">
+          
+          {% csrf_token %}
+
+          <div class="col-span-3 sm:col-span-3">
+              <label for="pet_name" class="block text-sm font-medium text-gray-700"> Pet Name </label>
+
+              <input
+                name="pet_name"
+                type="text"
+                id="pet_name"
+                class="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+              />
+          </div>
+
+        
+
+          <div class="col-span-3 sm:col-span-3">
+            <label for="pet_picture" class="block text-sm font-medium text-gray-700"> Pet Picture </label>
+   
+            <input name="pet_picture" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" id="file_input" type="file" onchange="loadPreview(this)">
+            <div>
+                <img id="preview">
+            </div>
+  
+          </div>
+
+          
+          <div class="col-span-3 sm:col-span-3">
+            <label for="pet_description" class="block text-sm font-medium text-gray-700"> Pet Description </label>
+   
+            <textarea name="pet_description" id="pet_description"></textarea>
+
+  
+          </div>
+          <button type="submit" class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Post</button>
+        </form>
+      </div>
+    </main>
+  </div>
+</section>
+
+
+{% endblock %}
+
+{% block script %}
+<script>
+function loadPreview(input) {
+  var file = input.files[0]
+  var fileReader = new FileReader()
+  fileReader.addEventListener("load", function () {
+      // convert image to base64 encoded string
+      document.getElementById("preview").setAttribute("src", this.result);
+  });
+  fileReader.readAsDataURL(file)
+}
+</script>
+{% endblock %}

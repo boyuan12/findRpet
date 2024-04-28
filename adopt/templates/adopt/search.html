@@ -1,0 +1,101 @@
+{% extends "authentication/base.html" %}
+
+{% block main %}
+<section class="bg-white">
+    <div class="lg:grid lg:min-h-screen lg:grid-cols-12">
+
+      <main
+        class="flex items-center justify-center px-8 py-8 sm:px-12 lg:col-span-12 lg:px-16 lg:py-12 xl:col-span-12"
+      >
+        <div class="max-w-xl lg:max-w-3xl">
+          <h1 class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-black">Report Strayed Pets</h1>
+
+
+          <form method="POST" class="mt-8 grid grid-cols-3 gap-3">
+            
+            {% csrf_token %}
+  
+            <div class="col-span-3 sm:flex sm:items-center sm:gap-4">
+              <button
+                class="inline-block shrink-0 rounded-md border border-blue-600 bg-green-600 px-12 py-3 text-sm font-medium text-white transition hover:bg-transparent hover:text-blue-600 focus:outline-none focus:ring active:text-blue-500"
+                id="curr"
+                type="button"
+              >
+                Search Adoptable Pets Near You
+            </button>
+  
+            </div>
+
+            <div class="col-span-3 sm:col-span-3">
+                <label for="addr" class="block text-sm font-medium text-gray-700"> Address </label>
+    
+                <input
+                  type="text"
+                  id="addr"
+                  class="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+                />
+            </div>
+
+
+            <div class="col-span-3 sm:flex sm:items-center sm:gap-4">
+                <button
+                  class="inline-block shrink-0 rounded-md border border-blue-600 bg-blue-600 px-12 py-3 text-sm font-medium text-white transition hover:bg-transparent hover:text-blue-600 focus:outline-none focus:ring active:text-blue-500"
+                  type="button"
+                  id="button"
+                >
+                  Search By Address
+                </button>
+    
+            </div>
+
+          </form>
+        </div>
+      </main>
+    </div>
+</section>
+
+<script async
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAbG_qddT1vGGaJpXAboE5qP9HWboZdVek&callback=initAutocomplete&libraries=places&v=weekly">
+</script>
+<script>
+function initAutocomplete() {
+  var address1Field = document.querySelector("#addr");
+
+  // Create the autocomplete object, restricting the search predictions to
+  // addresses in the US and Canada.
+  autocomplete = new google.maps.places.Autocomplete(address1Field);
+//   {
+//     componentRestrictions: { country: ["us", "ca"] },
+//     fields: ["address_components", "geometry"],
+//     types: ["address"],
+//   }
+  address1Field.focus();
+  // When the user selects an address from the drop-down, populate the
+  // address fields in the form.
+  autocomplete.addListener("place_changed", fillInAddress);
+}
+
+function fillInAddress() {
+  // Get the place details from the autocomplete object.
+  const place = autocomplete.getPlace();
+    console.log(place.address_components)
+}
+
+document.getElementById("button").onclick = () => {
+    fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${document.getElementById('addr').value}&key=AIzaSyAbG_qddT1vGGaJpXAboE5qP9HWboZdVek`)
+    .then(response => response.json())
+    .then(data => {
+        window.location.assign(`/adopt/adoptable-animals?lat=${data.results[0].geometry.location.lat}&long=${data.results[0].geometry.location.lng}&p=1`)
+    })
+}
+
+document.getElementById("curr").onclick = () => {
+    navigator.geolocation.getCurrentPosition((position) => {
+        let lat = position.coords.latitude;
+        let long = position.coords.longitude;
+        window.location.assign(`/adopt/adoptable-animals?lat=${lat}&long=${long}&p=1`)
+    })
+}
+window.initAutocomplete = initAutocomplete;
+</script>
+{% endblock %}

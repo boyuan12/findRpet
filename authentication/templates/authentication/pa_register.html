@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script 
+    src="https://www.unpkg.com/@propelauth/javascript@2.0.11/dist/javascript.min.js" 
+    integrity="sha384-FENNH2f7QuQvkZJBL7jebLr0OtYKgTA2iq+C5g3VXXX7SBwWmeMMoc+pBBtcn76G" 
+    crossorigin="anonymous"></script>
+</head>
+<body>
+    
+    <script>
+        const authClient = createClient({
+            // The base URL where your authentication pages are hosted.
+            // You can find this under the Frontend Integration section for your project.
+            authUrl: "https://848898595.propelauthtest.com",
+
+            // If true, periodically refresh the access token in the background.
+            // This helps ensure you always have a valid token ready to go. Default true.
+            enableBackgroundTokenRefresh: true,
+        });
+
+        async function banana() {
+            const authInfo = await authClient.getAuthenticationInfoOrNull()
+            if (authInfo) {
+                console.log("User is logged in as", authInfo.user.email)
+            } else {
+                console.log("User is not logged in")
+            }
+        }
+
+    </script>
+</body>
+</html>

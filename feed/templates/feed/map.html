@@ -1,0 +1,184 @@
+{% extends "authentication/base.html" %}
+
+{% block head %}
+    <style>
+        #map {
+  height: 100%;
+}
+#report_stray {
+  display: block;
+  text-align: center;
+  border-radius: 3px;
+}
+/* 
+ * Optional: Makes the sample page fill the window. 
+ */
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+    </style>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+{% endblock %}
+
+{% block main %}
+    <a id="report_stray" href="{% url "add_stray" %}" class="text-gray-900 bg-gradient-to-r from-red-200 via-red-300 to-yellow-200 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-red-100 dark:focus:ring-red-400 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Report Strays </a>
+    <div id="map"></div>
+
+
+    <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAbG_qddT1vGGaJpXAboE5qP9HWboZdVek&callback=initMap&v=weekly"
+    defer
+  ></script>
+<!-- <script>
+    function initMap() {
+        navigator.geolocation.getCurrentPosition((position) => {
+            const map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 10,
+                center: { lat: position.coords.latitude, lng: position.coords.longitude},
+            });
+            setMarkers(map);
+        })
+}
+
+// Data for the markers consisting of a name, a LatLng and a zIndex for the
+// order in which these markers should display on top of each other.
+const beaches = [
+  ["Bondi Beach", -33.890542, 151.274856, 4],
+  ["Coogee Beach", -33.923036, 151.259052, 5],
+  ["Cronulla Beach", -34.028249, 151.157507, 3],
+  ["Manly Beach", -33.80010128657071, 151.28747820854187, 2],
+  ["Maroubra Beach", -33.950198, 151.259302, 1],
+];
+
+
+
+function setMarkers(map) {
+  // Shapes define the clickable region of the icon. The type defines an HTML
+  // <area> element 'poly' which traces out a polygon as a series of X,Y points.
+  // The final coordinate closes the poly by connecting to the first coordinate.
+  const shape = {
+    coords: [1, 1, 1, 20, 18, 20, 18, 1],
+    type: "poly",
+  };
+
+
+  fetch("/feed/fetch-locations/")
+  .then(response => response.json())
+  .then(data => {
+    const infoWindow = new google.maps.InfoWindow();
+
+    for (let i = 0; i < data.length; i++) {
+    const loc = data[i];
+
+    var _marker = new google.maps.Marker({
+        position: { lat: loc.lat, lng: loc.long },
+        map,
+        icon: marker(loc.icon),
+        shape: shape,
+        // title: `${loc.desc} <br> <a href="https://maps.google.com/?q=<lat>,<lng>>link</a>"`,
+        optimized: false,
+    });
+
+    _marker.addListener("click", () => {
+        infoWindow.close();
+        infoWindow.setContent(`${loc.desc} <br> <a href="https://maps.google.com/?q=${loc.lat},${loc.long}">Direction</a>`)
+        infoWindow.open(_marker.getMap(), _marker);
+    });
+  }
+  })
+
+
+}
+
+
+
+window.initMap = initMap;
+
+</script> -->
+
+<script>
+    /**
+ * @license
+ * Copyright 2021 Google LLC.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+// The following example creates five accessible and
+// focusable markers.
+
+function getMarker(url) {
+      // Adds markers to the map.
+  // Marker sizes are expressed as a Size of X,Y where the origin of the image
+  // (0,0) is located in the top left of the image.
+  // Origins, anchor positions and coordinates of the marker increase in the X
+  // direction to the right and in the Y direction down.
+  return image = {
+    url: url, // https://res.cloudinary.com/boyuan12/image/upload/v1714272569/cat_1_fpacpr.png
+    // This marker is 20 pixels wide by 32 pixels high.
+    size: new google.maps.Size(20, 32),
+    // The origin for this image is (0, 0).
+    origin: new google.maps.Point(0, 0),
+    // The anchor for this image is the base of the flagpole at (0, 32).
+    anchor: new google.maps.Point(0, 32),
+  };
+}
+
+function initMap() {
+    var lat = 0
+    var lng = 0;
+    navigator.geolocation.getCurrentPosition((position) => {
+        lat = position.coords.latitude;
+        lng = position.coords.longitude;
+    })
+
+  const map = new google.maps.Map(document.getElementById("map"), {
+    zoom: 12,
+    center: { lat: lat, lng: lng },
+  });
+
+
+if (navigator.geolocation) {
+     navigator.geolocation.getCurrentPosition(function (position) {
+         initialLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+         map.setCenter(initialLocation);
+     });
+ }
+ 
+  // Create an info window to share between markers.
+  const infoWindow = new google.maps.InfoWindow();
+
+  // Create the markers.
+  fetch("/feed/fetch-locations/")
+  .then(response => response.json())
+  .then(data => {
+    const infoWindow = new google.maps.InfoWindow();
+
+    for (let i = 0; i < data.length; i++) {
+      var position = {lat: data[i].lat, lng: data[i].long}
+      const marker = new google.maps.Marker({
+      position,
+      map,
+      icon: getMarker(data[i].icon),
+      title: `${data[i].desc}`,
+      optimized: false,
+    });
+        // Add a click listener for each marker, and set up the info window.
+    marker.addListener("click", () => {
+      infoWindow.close();
+      infoWindow.setContent(marker.getTitle() + "<br>" + `<a href='https://maps.google.com?q=${data[i].lat},${data[i].long}'>Direction</a>`);
+      infoWindow.open(marker.getMap(), marker);
+    });
+}
+
+
+  });
+}
+
+window.initMap = initMap;
+
+</script>
+{% endblock %}
+

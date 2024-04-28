@@ -1,0 +1,104 @@
+{% extends "authentication/base.html" %}
+
+{% block main %}
+<section class="bg-white">
+    <div class="lg:grid lg:min-h-screen lg:grid-cols-12">
+
+      <main
+        class="flex items-center justify-center px-8 py-8 sm:px-12 lg:col-span-12 lg:px-16 lg:py-12 xl:col-span-12"
+      >
+        <div class="max-w-xl lg:max-w-3xl">
+          <h1 class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-black">Report Strayed Pets</h1>
+
+
+          <form method="POST" class="mt-8 grid grid-cols-3 gap-3">
+            
+            {% csrf_token %}
+            <div class="col-span-3 sm:col-span-3">
+                <label for="long" class="block text-sm font-medium text-gray-700"> Longitude </label>
+    
+                <input
+                  type="text"
+                  id="long"
+                  name="long"
+                  class="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+                />
+            </div>
+    
+              <div class="col-span-3 sm:col-span-3">
+                <label for="lat" class="block text-sm font-medium text-gray-700">
+                  Latitude
+                </label>
+    
+                <input
+                  type="text"
+                  id="lat"
+                  name="lat"
+                  class="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+                />
+              </div>
+
+  
+            <div class="col-span-3 sm:flex sm:items-center sm:gap-4">
+              <button
+                class="inline-block shrink-0 rounded-md border border-blue-600 bg-green-600 px-12 py-3 text-sm font-medium text-white transition hover:bg-transparent hover:text-blue-600 focus:outline-none focus:ring active:text-blue-500"
+                id="address"
+                type="button"
+              >
+                Fetch Address
+              </button>
+  
+            </div>
+
+            <div class="col-span-3 sm:col-span-3">
+                <label for="desc" class="block text-sm font-medium text-gray-700"> Brief Description </label>
+    
+                <input
+                  type="text"
+                  id="desc"
+                  name="desc"
+                  class="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+                  max="50"
+                />
+            </div>
+
+            <div class="col-span-3 sm:col-span-3">
+                <label for="type" class="block text-sm font-medium text-gray-700"> Type of Pet </label>
+    
+                <input
+                  type="text"
+                  id="type"
+                  name="type"
+                  class="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+                  max="20"
+                />
+            </div>
+
+            <div class="col-span-3 sm:flex sm:items-center sm:gap-4">
+                <button
+                  class="inline-block shrink-0 rounded-md border border-blue-600 bg-blue-600 px-12 py-3 text-sm font-medium text-white transition hover:bg-transparent hover:text-blue-600 focus:outline-none focus:ring active:text-blue-500"
+                  id="address"
+                >
+                  Submit
+                </button>
+    
+              </div>
+
+          </form>
+        </div>
+      </main>
+    </div>
+</section>
+
+<script>
+    document.getElementById("address").addEventListener("click", () => {
+        navigator.geolocation.getCurrentPosition((position) => {
+            let lat = position.coords.latitude;
+            let long = position.coords.longitude;
+
+            document.getElementById("lat").value = lat.toFixed(2);
+            document.getElementById("long").value = long.toFixed(2);
+        });
+    });
+</script>
+{% endblock %}

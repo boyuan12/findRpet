@@ -1,0 +1,17 @@
+{% extends "authentication/base.html" %}
+
+{% block main %}
+<br>
+<h2 class="text-4xl font-extrabold dark:text-white text-center">Have you seen {{ pet_profile.pet_name }}?</h2> <br>
+{% if request.user == pet_profile.user %}
+<div class="flex justify-center items-center">
+    <a href="/found/{{ pet_profile.id }}" style="color: red">Click here if your pet is now found!</a>
+</div>
+{% endif %}
+<div class="flex justify-center items-center">
+    <br> <br>
+    <img class="h-auto max-w-lg rounded-lg" src="{{ pet_profile.pet_picture }}" width="200vh" height="200vh">
+</div>
+<div class="text-center dark:text-white">{{ pet_profile.pet_description | safe }}</p> <br>
+<h4 class="text-4xl font-bold text-center dark:text-white">If seen, please email: {{ pet_profile.user.email }} or call: {{ owner.phone_number }}</div>
+{% endblock %}
